@@ -48,6 +48,13 @@
             overflow-x: auto;
             min-height: 200px;
         }
+        .not-baseline {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .baseline {
+            color: #28a745;
+        }
     </style>
 </head>
 <body>
@@ -89,7 +96,14 @@
                 const data = await response.json();
                 
                 document.getElementById('rawOutput').textContent = data.generatedCss;
-                document.getElementById('validationOutput').textContent = JSON.stringify(data.validationResults, null, 2);
+                
+                let formattedResults = data.validationResults.map(result => {
+                    const status = result.isBaseline ? 'baseline' : 'not-baseline';
+                    const comment = result.isBaseline ? '' : ' // NOT BASELINE';
+                    return `<span class="${status}">${JSON.stringify(result)}${comment}</span>`;
+                }).join(',\n');
+                
+                document.getElementById('validationOutput').innerHTML = '[\n' + formattedResults + '\n]';
             } catch (error) {
                 alert('Error: ' + error.message);
             }
