@@ -2,6 +2,12 @@ const fastify = require('fastify')({ logger: true });
 const { isCssPropertyBaseline } = require('./baseline-checker');
 const OpenAI = require('openai');
 const postcss = require('postcss');
+const path = require('path');
+
+fastify.register(require('@fastify/static'), {
+  root: path.join(__dirname, 'public'),
+  prefix: '/'
+});
 
 function getOpenAIClient() {
   if (!process.env.OPENAI_API_KEY) {
@@ -9,10 +15,6 @@ function getOpenAIClient() {
   }
   return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 }
-
-fastify.get('/', async (request, reply) => {
-  return { status: 'ok' };
-});
 
 fastify.get('/check/:property', async (request, reply) => {
   const { property } = request.params;
