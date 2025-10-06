@@ -47,7 +47,9 @@ fastify.post('/govern', async (request, reply) => {
     ]
   });
   
-  const generatedCss = response.choices[0].message.content;
+  let generatedCss = response.choices[0].message.content;
+  
+  generatedCss = generatedCss.replace(/```css\n?/g, '').replace(/```\n?/g, '').trim();
   
   const root = postcss.parse(generatedCss);
   const validationResults = [];
